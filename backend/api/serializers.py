@@ -3,7 +3,9 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import HeroBanner
 from .models import FeatureSection
-from .models import Menu
+from .models import Menu, Event
+from .models import ChefOfTheWeek
+from .models import AboutSection
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     username_field = 'email'  # Indique que l'identifiant est email
@@ -45,4 +47,27 @@ class FeatureSectionSerializer(serializers.ModelSerializer):
 class MenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Menu
+        fields = '__all__'
+        
+# Event
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'
+        
+# Chef
+class ChefOfTheWeekSerializer(serializers.ModelSerializer):
+    specialties = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ChefOfTheWeek
+        fields = ['name', 'image', 'bio', 'specialties', 'quote']
+
+    def get_specialties(self, obj):
+        return obj.get_specialties_list()
+    
+# About
+class AboutSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutSection
         fields = '__all__'

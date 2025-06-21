@@ -3,6 +3,10 @@ from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser, HeroBanner
 from .models import FeatureSection
 from .models import Menu
+from .models import Event
+from .models import ChefOfTheWeek
+from .models import AboutSection
+
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
@@ -78,3 +82,25 @@ class MenuAdmin(admin.ModelAdmin):
             return "-"
         return ", ".join(obj.available_days)
     get_available_days_display.short_description = 'Jours disponibles'
+
+
+# Event
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('title', 'date', 'is_active')
+    list_filter = ('is_active', 'date')
+    search_fields = ('title', 'description')
+    ordering = ('-date',)
+    
+@admin.register(ChefOfTheWeek)
+class ChefOfTheWeekAdmin(admin.ModelAdmin):
+    list_display = ('name', 'is_active', 'created_at')
+    list_filter = ('is_active',)
+    search_fields = ('name',)
+
+
+# About
+@admin.register(AboutSection)
+class AboutSectionAdmin(admin.ModelAdmin):
+    list_display = ('title', 'button_label', 'button_url')
+    search_fields = ('title',)

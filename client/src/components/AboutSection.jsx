@@ -1,39 +1,58 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function AboutSection() {
+  const [about, setAbout] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/api/about-section/")
+      .then((res) => {
+        if (!res.ok) throw new Error("Erreur lors du chargement de la section à propos");
+        return res.json();
+      })
+      .then((data) => {
+        setAbout(data[0]);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p className="text-center py-16">Chargement...</p>;
+  if (error) return <p className="text-center py-16 text-red-600">Erreur : {error}</p>;
+  if (!about) return null;
+
   return (
-    <section className="overflow-hidden bg-gray-50 sm:grid sm:grid-cols-2">
+    <section className="overflow-hidden bg-gray-50 sm:grid sm:grid-cols-2 sm:gap-8">
       {/* Texte côté gauche */}
       <div className="p-8 md:p-12 lg:px-16 lg:py-24">
         <div className="mx-auto max-w-xl text-center sm:text-left">
-          <h2 className="text-3xl font-bold text-gray-900 md:text-4xl">
-            Cochef, une passion pour la cuisine à partager
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-900 md:text-4xl">{about.title}</h2>
 
-          <p className="text-gray-600 md:mt-4 leading-relaxed">
-            Cochef est une startup culinaire qui réinvente la livraison de repas.
-            Chaque semaine, nos chefs conçoivent des menus savoureux, équilibrés et originaux
-            à base d’ingrédients frais et locaux. Que vous soyez pressé ou curieux, laissez-vous
-            guider par la créativité de nos cuisiniers pour transformer vos repas en expérience.
-          </p>
+          <p className="text-gray-600 md:mt-4 leading-relaxed">{about.description}</p>
 
           <div className="mt-6 md:mt-8">
             <a
-              href="/menu"
-              className="inline-block rounded bg-emerald-600 px-8 py-3 text-sm font-medium text-white transition hover:bg-emerald-700"
+              href={about.button_url}
+              className="inline-block rounded bg-indigo-600 px-8 py-3 text-sm font-medium text-white transition hover:bg-indigo-700"
             >
-              Découvrir nos menus
+              {about.button_label}
             </a>
           </div>
         </div>
       </div>
 
-      {/* Image côté droit */}
-      <img
-        alt="Cuisine Cochef"
-        src="https://images.unsplash.com/photo-1464582883107-8adf2dca8a9f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1770&q=80"
-        className="h-56 w-full object-cover sm:h-full"
-      />
+      {/* Image côté droit avec padding et bord arrondi */}
+      <div className="p-4 md:p-8 lg:p-12">
+        <img
+          alt={about.image_alt || "Image à propos"}
+          src={about.image}
+          className="w-full h-auto object-cover rounded-xl"
+        />
+      </div>
     </section>
   );
 }

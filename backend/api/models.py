@@ -120,3 +120,42 @@ class Menu(models.Model):
 
     def __str__(self):
         return self.title
+
+# Event
+class Event(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    date = models.DateField()
+    image = models.ImageField(upload_to='events/')
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.date}"
+    
+# Chef of week
+class ChefOfTheWeek(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='chefs/')
+    bio = models.TextField()
+    specialties = models.TextField(help_text="Liste séparée par des virgules")
+    quote = models.CharField(max_length=255, blank=True)
+    is_active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def get_specialties_list(self):
+        return [s.strip() for s in self.specialties.split(',') if s.strip()]
+
+    def __str__(self):
+        return self.name
+    
+# AboutSection
+class AboutSection(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    button_label = models.CharField(max_length=100, default="Découvrir")
+    button_url = models.URLField()
+    image = models.ImageField(upload_to='about/')
+    image_alt = models.CharField(max_length=150, blank=True)
+
+    def __str__(self):
+        return self.title

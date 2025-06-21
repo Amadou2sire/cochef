@@ -16,6 +16,14 @@ from .serializers import FeatureSectionSerializer
 from .models import Menu
 from .serializers import MenuSerializer
 
+from .models import Event
+from .serializers import EventSerializer
+
+from .models import ChefOfTheWeek
+from .serializers import ChefOfTheWeekSerializer
+
+from .models import AboutSection
+from .serializers import AboutSectionSerializer
 
 User = get_user_model()
 
@@ -70,3 +78,20 @@ class FeatureSectionListView(ListAPIView):
 class MenuListAPIView(generics.ListAPIView):
     queryset = Menu.objects.filter(is_active=True)
     serializer_class = MenuSerializer
+    
+    
+# Event
+class ActiveEventListView(generics.ListAPIView):
+    queryset = Event.objects.filter(is_active=True).order_by('date')
+    serializer_class = EventSerializer
+    
+# chef
+class ChefOfTheWeekView(generics.ListAPIView):
+    queryset = ChefOfTheWeek.objects.filter(is_active=True).order_by('-created_at')[:1]
+    serializer_class = ChefOfTheWeekSerializer
+    
+    
+# About
+class AboutSectionView(generics.ListAPIView):
+    queryset = AboutSection.objects.all()
+    serializer_class = AboutSectionSerializer
