@@ -64,7 +64,7 @@ export default function Header({ isLoggedIn, onLogout }) {
             ) : (
               <>
                 <Link
-                  to="/profile"
+                  to="/dashboard"
                   className="inline-flex items-center space-x-2 text-gray-700 hover:text-green-600 font-semibold"
                 >
                   <FiUser size={20} />

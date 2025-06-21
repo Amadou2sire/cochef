@@ -26,7 +26,7 @@ export default function ChefOfTheWeek() {
   if (!chef) return null;
 
   return (
-    <section className="py-16 px-6 max-w-6xl mx-auto">
+    <section id="section-chef" className="py-16 px-6 max-w-6xl mx-auto">
       <h2 className="text-3xl font-bold mb-10 text-center">Chef de la semaine</h2>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 items-center">
