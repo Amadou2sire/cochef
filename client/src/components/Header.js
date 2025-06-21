@@ -45,12 +45,12 @@ export default function Header({ isLoggedIn, onLogout }) {
           {/* Actions */}
           <div className="hidden md:flex md:items-center md:space-x-6">
             {/* Commander */}
-            <Link
+            {/* <Link
               to="/order"
               className="inline-flex items-center px-6 py-2 border border-transparent text-base font-semibold rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 transition"
             >
               Commander
-            </Link>
+            </Link> */}
 
             {/* Auth buttons */}
             {!isLoggedIn ? (

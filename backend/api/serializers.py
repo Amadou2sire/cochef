@@ -6,6 +6,7 @@ from .models import FeatureSection
 from .models import Menu, Event
 from .models import ChefOfTheWeek
 from .models import AboutSection
+from .models import Order
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     username_field = 'email'  # Indique que l'identifiant est email
@@ -71,3 +72,13 @@ class AboutSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = AboutSection
         fields = '__all__'
+        
+# Commande
+class OrderSerializer(serializers.ModelSerializer):
+    menu = MenuSerializer(read_only=True)
+    menu_id = serializers.PrimaryKeyRelatedField(queryset=Menu.objects.all(), source='menu', write_only=True)
+
+    class Meta:
+        model = Order
+        fields = ['id', 'user', 'menu', 'menu_id', 'quantity', 'status', 'created_at', 'notes', 'order_number']
+        read_only_fields = ['id', 'created_at', 'order_number', 'status', 'user']

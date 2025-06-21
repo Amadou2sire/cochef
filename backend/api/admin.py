@@ -6,7 +6,7 @@ from .models import Menu
 from .models import Event
 from .models import ChefOfTheWeek
 from .models import AboutSection
-
+from .models import Order
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
@@ -104,3 +104,14 @@ class ChefOfTheWeekAdmin(admin.ModelAdmin):
 class AboutSectionAdmin(admin.ModelAdmin):
     list_display = ('title', 'button_label', 'button_url')
     search_fields = ('title',)
+    
+# Commande
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('order_number', 'user', 'menu', 'quantity', 'status', 'created_at')
+    list_filter = ('status', 'created_at')
+    search_fields = ('order_number', 'user__username', 'menu__title')
+    ordering = ('-created_at',)
+    readonly_fields = ('order_number', 'created_at')
+    
+# Gerante

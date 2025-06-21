@@ -25,6 +25,10 @@ from .serializers import ChefOfTheWeekSerializer
 from .models import AboutSection
 from .serializers import AboutSectionSerializer
 
+from rest_framework import viewsets, permissions
+from .models import Order
+from .serializers import OrderSerializer
+
 User = get_user_model()
 
 class RegisterSerializer(ModelSerializer):
@@ -79,6 +83,9 @@ class MenuListAPIView(generics.ListAPIView):
     queryset = Menu.objects.filter(is_active=True)
     serializer_class = MenuSerializer
     
+class MenuDetailAPIView(generics.RetrieveAPIView):
+    queryset = Menu.objects.filter(is_active=True)
+    serializer_class = MenuSerializer    
     
 # Event
 class ActiveEventListView(generics.ListAPIView):
@@ -95,3 +102,16 @@ class ChefOfTheWeekView(generics.ListAPIView):
 class AboutSectionView(generics.ListAPIView):
     queryset = AboutSection.objects.all()
     serializer_class = AboutSectionSerializer
+
+# commande
+class OrderViewSet(viewsets.ModelViewSet):
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Pour que l'utilisateur ne voit que ses commandes
+        return Order.objects.filter(user=self.request.user).order_by('-created_at')
+
+    def perform_create(self, serializer):
+        # On associe la commande à l'utilisateur connecté automatiquement
+        serializer.save(user=self.request.user)

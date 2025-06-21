@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.conf import settings
 
 class CustomUserManager(BaseUserManager):
     use_in_migrations = True
@@ -159,3 +160,32 @@ class AboutSection(models.Model):
 
     def __str__(self):
         return self.title
+    
+# Commande
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'En attente'),
+        ('confirmed', 'Confirmée'),
+        ('preparing', 'En préparation'),
+        ('delivered', 'Livrée'),
+        ('cancelled', 'Annulée'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    menu = models.ForeignKey('Menu', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True)
+
+    order_number = models.CharField(max_length=20, unique=True, blank=True, editable=False)
+
+    def save(self, *args, **kwargs):
+        if not self.order_number:
+            last_id = Order.objects.all().order_by('id').last()
+            if not last_id:
+                new_id = 1
+            else:
+                new_id = last_id.id + 1
+            self.order_number = f"CMD{new_id:06d}"  # ex: CMD000001
+        super().save(*args, **kwargs)

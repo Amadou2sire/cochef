@@ -7,16 +7,16 @@ import {
 } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Dashboard from "./pages/Dashboard"; // Exemple page protégée
+import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Home from "./pages/Home"
+import Home from "./pages/Home";
 import ConsentBanner from "./components/ConsentBanner";
 import PrivacyPage from "./pages/PrivacyPage";
+import OrderForm from "./components/OrderForm";
 
 function App() {
-  // Gère l’état connecté en fonction de la présence d’un token
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -24,31 +24,26 @@ function App() {
     setIsLoggedIn(!!token);
   }, []);
 
-  // Déconnexion simple : supprime les tokens + update état
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     setIsLoggedIn(false);
   };
 
-  // Fonction appelée par Login quand connexion réussie
   const handleLogin = () => {
     setIsLoggedIn(true);
   };
 
   return (
-   <Router>
+    <Router>
       <div className="flex flex-col min-h-screen">
         <Header isLoggedIn={isLoggedIn} onLogout={handleLogout} />
 
         <main className="min-h-[calc(100vh-128px)] flex-grow">
           <Routes>
-            {/* Route Home accessible sur /cochef */}
+            {/* Routes publiques */}
             <Route path="/cochef" element={<Home />} />
             <Route path="/privacy" element={<PrivacyPage />} />
-
-            {/* Redirection racine / vers /cochef */}
-            <Route path="/" element={<Navigate to="/cochef" replace />} />
 
             <Route
               path="/login"
@@ -60,6 +55,7 @@ function App() {
                 )
               }
             />
+
             <Route
               path="/register"
               element={
@@ -67,6 +63,7 @@ function App() {
               }
             />
 
+            {/* Routes protégées */}
             <Route
               path="/dashboard"
               element={
@@ -76,7 +73,19 @@ function App() {
               }
             />
 
-            {/* Catch-all route redirige vers /cochef ou /dashboard */}
+            <Route
+              path="/order/:id"
+              element={
+                <PrivateRoute isAuthenticated={isLoggedIn}>
+                  <OrderForm />
+                </PrivateRoute>
+              }
+            />
+
+            {/* Redirection racine */}
+            <Route path="/" element={<Navigate to="/cochef" replace />} />
+
+            {/* Catch-all */}
             <Route
               path="*"
               element={
