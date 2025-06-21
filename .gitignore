@@ -1,0 +1,12 @@
+# .gitignore
+# Python
+server/__pycache__/
+*.pyc
+*.sqlite3
+.env
+
+# Node
+client/node_modules/
+client/.env
+dist/
+build/
