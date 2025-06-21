@@ -1,6 +1,9 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
 from rest_framework import serializers
+from .models import HeroBanner
+from .models import FeatureSection
+from .models import Menu
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     username_field = 'email'  # Indique que l'identifiant est email
@@ -21,3 +24,25 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Injecte 'username' dans attrs (attendu par super) et appelle la validation parent
         attrs['username'] = email
         return super().validate(attrs)
+
+# Banner
+class HeroBannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HeroBanner
+        fields = [
+            "id", "title", "description", "media_type", "media_file", "is_active",
+            "primary_button_label", "primary_button_url",
+            "secondary_button_label", "secondary_button_url"
+        ]
+        
+# Featuresection
+class FeatureSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FeatureSection
+        fields = "__all__"
+        
+# Menus
+class MenuSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Menu
+        fields = '__all__'

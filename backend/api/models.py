@@ -47,3 +47,76 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+# Bannière
+class HeroBanner(models.Model):
+    MEDIA_TYPE_CHOICES = [
+        ('image', 'Image'),
+        ('video', 'Vidéo (.mp4)'),
+    ]
+
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    media_type = models.CharField(max_length=10, choices=MEDIA_TYPE_CHOICES, default='image')
+    media_file = models.FileField(upload_to='hero/', help_text="Image (.jpg, .png) ou vidéo (.mp4)")
+    
+    # Bouton principal
+    primary_button_label = models.CharField(max_length=100, blank=True)
+    primary_button_url = models.URLField(blank=True)
+    
+    # Bouton secondaire
+    secondary_button_label = models.CharField(max_length=100, blank=True)
+    secondary_button_url = models.URLField(blank=True)
+
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} ({'Actif' if self.is_active else 'Inactif'})"
+
+#Featuresection
+class FeatureSection(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    button_label = models.CharField(max_length=100, blank=True)
+    button_url = models.URLField(blank=True)
+    image_1 = models.ImageField(upload_to='features/')
+    image_2 = models.ImageField(upload_to='features/')
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title 
+
+# Menus
+class Menu(models.Model):
+    CATEGORY_CHOICES = [
+        ('special', 'Spécial semaine'),
+        ('event', 'Événementiel'),
+        ('classic', 'Classique'),
+        ('kids', 'Enfant'),
+        ('veggie', 'Végétarien'),
+    ]
+
+    DAY_CHOICES = [
+        ('monday', 'Lundi'),
+        ('tuesday', 'Mardi'),
+        ('wednesday', 'Mercredi'),
+        ('thursday', 'Jeudi'),
+        ('friday', 'Vendredi'),
+        ('saturday', 'Samedi'),
+        ('sunday', 'Dimanche'),
+    ]
+
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    image = models.ImageField(upload_to='menus/')
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='classic')
+    price = models.DecimalField(max_digits=7, decimal_places=3, default=0.000)  
+    available_days = models.JSONField(help_text="Liste des jours disponibles ex: ['monday', 'friday']")
+    is_new = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
